@@ -22,7 +22,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r28
+          ndk-version: r27c # Эта версия соответствует 27.0.12077973
           add-to-path: true
 
       - name: Set up Flutter
