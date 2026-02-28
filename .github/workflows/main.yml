@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest 
 
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +18,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Устанавливаем NDK версии 28, как просит лог
       - name: Setup Android NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
@@ -35,11 +34,13 @@ jobs:
         run: flutter pub get
         working-directory: example
 
-      # Создаем файл настроек и прописываем путь к NDK вручную
+      # Исправленный блок для Windows (используем PowerShell)
       - name: Configure NDK path
+        shell: pwsh
         run: |
-          echo "ndk.dir=${{ steps.setup-ndk.outputs.ndk-path }}" >> example/android/local.properties
-          echo "sdk.dir=$ANDROID_SDK_ROOT" >> example/android/local.properties
+          $ndkPath = "${{ steps.setup-ndk.outputs.ndk-path }}".Replace('\', '/')
+          "ndk.dir=$ndkPath" | Out-File -FilePath example/android/local.properties -Encoding utf8
+          "sdk.dir=$($env:ANDROID_SDK_ROOT.Replace('\', '/'))" | Out-File -FilePath example/android/local.properties -Append -Encoding utf8
 
       - name: Build APK
         run: flutter build apk --release --target-platform android-arm64
