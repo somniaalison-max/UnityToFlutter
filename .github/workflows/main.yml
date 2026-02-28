@@ -2,47 +2,44 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ "master" ] # Запуск при пуше в main
-  pull_request:
-    branches: [ "master" ] # Запуск при создании PR в main
+    branches: [ "master" ] # Проверьте, что у вас master, а не main
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Используем Linux-сервер для сборки Android/Web
+    runs-on: ubuntu-latest
 
     steps:
-      # 1. Загрузка исходного кода из репозитория
       - uses: actions/checkout@v4
 
-      # 2. Установка Java (нужна для сборки Android)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Установка Flutter SDK
+      # Установка NDK (необходим для Unity-библиотек)
+      - name: Install Android NDK
+        uses: nnbnh/setup-ndk@v1
+        with:
+          ndk-version: r23c # Стабильная версия для большинства Unity-проектов
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' # Или указывайте конкретную версию (например, 3.24.0)
+          channel: 'stable'
 
-      # 4. Загрузка зависимостей (pub get)
       - name: Install dependencies
         run: flutter pub get
+        working-directory: example
 
-      # 5. (Опционально) Запуск тестов и линтера
-      #- name: Run analyzer and tests
-        ##flutter analyze
-          # flutter test # Раскомментируйте, если есть тесты
-
-      # 6. Сборка приложения
       - name: Build APK
-        run: flutter build apk --release
+        # Собираем только arm64, чтобы сэкономить время и память в облаке
+        run: flutter build apk --release --target-platform android-arm64
+        working-directory: example
 
-      # 7. Сохранение готового файла как артефакта
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: example/build/app/outputs/flutter-apk/app-release.apk
