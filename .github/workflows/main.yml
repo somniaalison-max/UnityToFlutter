@@ -2,7 +2,7 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ "master" ] # Проверьте, что у вас master, а не main
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -18,12 +18,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Установка NDK (необходим для Unity-библиотек)
-      - name: Install Android NDK
-        uses: nnbnh/setup-ndk@v1
-        with:
-          ndk-version: r23c # Стабильная версия для большинства Unity-проектов
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -34,7 +28,7 @@ jobs:
         working-directory: example
 
       - name: Build APK
-        # Собираем только arm64, чтобы сэкономить время и память в облаке
+        # Собираем APK. Если Flutter попросит NDK, он попытается использовать встроенный.
         run: flutter build apk --release --target-platform android-arm64
         working-directory: example
 
