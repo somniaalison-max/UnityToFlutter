@@ -2,9 +2,9 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ "main" ] # Запуск при пуше в main
+    branches: [ "master" ] # Запуск при пуше в main
   pull_request:
-    branches: [ "main" ] # Запуск при создании PR в main
+    branches: [ "master" ] # Запуск при создании PR в main
 
 jobs:
   build:
