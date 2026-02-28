@@ -41,7 +41,7 @@ jobs:
           "sdk.dir=$($env:ANDROID_SDK_ROOT.Replace('\', '/'))" | Out-File -FilePath example/android/local.properties -Append -Encoding utf8
 
       - name: Build APK
-        run: flutter build apk --release --target-platform android-arm64
+        run: flutter build apk --release --target-platform android-arm,android-arm64
         working-directory: example
         env:
           ANDROID_NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}\ndk\27.2.12479018
