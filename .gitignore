@@ -1,6 +1,3 @@
-# Example unity project build files
-example/android/unityLibrary/src/main/Il2CppOutputProject/
-
 # Miscellaneous
 *.class
 *.log
