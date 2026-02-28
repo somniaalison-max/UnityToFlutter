@@ -1,0 +1,49 @@
+name: Flutter Build
+
+on:
+  push:
+    branches: [ "main" ] # Запуск при пуше в main
+  pull_request:
+    branches: [ "main" ] # Запуск при создании PR в main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Используем Linux-сервер для сборки Android/Web
+
+    steps:
+      # 1. Загрузка исходного кода из репозитория
+      - uses: actions/checkout@v4
+
+      # 2. Установка Java (нужна для сборки Android)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. Установка Flutter SDK
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # Или указывайте конкретную версию (например, 3.24.0)
+
+      # 4. Загрузка зависимостей (pub get)
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 5. (Опционально) Запуск тестов и линтера
+      - name: Run analyzer and tests
+        run: |
+          flutter analyze
+          # flutter test # Раскомментируйте, если есть тесты
+
+      # 6. Сборка приложения
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 7. Сохранение готового файла как артефакта
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
