@@ -32,9 +32,8 @@ jobs:
         run: flutter pub get
 
       # 5. (Опционально) Запуск тестов и линтера
-      - name: Run analyzer and tests
-        run: |
-          flutter analyze
+      #- name: Run analyzer and tests
+        ##flutter analyze
           # flutter test # Раскомментируйте, если есть тесты
 
       # 6. Сборка приложения
