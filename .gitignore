@@ -32,5 +32,3 @@ migrate_working_dir/
 .packages
 build/
 **/.cxx/
-
-example/android/unityLibrary/src/main/Il2CppOutputProject/
