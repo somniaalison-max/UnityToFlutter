@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+!example/android/unityLibrary/src/main/Il2CppOutputProject/IL2CPP/build/
 
 # Symbolication related
 app.*.symbols
