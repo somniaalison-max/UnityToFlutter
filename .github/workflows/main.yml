@@ -1,4 +1,4 @@
-name: Flutter Build (Unity 6)
+name: Flutter Build (Unity 6 Final Fix)
 
 on:
   push:
@@ -12,19 +12,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. Для Unity 6 обязательно нужен JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. Установка NDK r27c (требование Unity 6 для Android)
+      # Устанавливаем NDK версии 28, как просит лог
       - name: Setup Android NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r27c
+          ndk-version: r28
           add-to-path: true
 
       - name: Set up Flutter
@@ -36,10 +35,14 @@ jobs:
         run: flutter pub get
         working-directory: example
 
-      - name: Build APK
+      # Создаем файл настроек и прописываем путь к NDK вручную
+      - name: Configure NDK path
         run: |
-          # Указываем путь к NDK вручную, чтобы Gradle его точно увидел
-          flutter build apk --release --target-platform android-arm64
+          echo "ndk.dir=${{ steps.setup-ndk.outputs.ndk-path }}" >> example/android/local.properties
+          echo "sdk.dir=$ANDROID_SDK_ROOT" >> example/android/local.properties
+
+      - name: Build APK
+        run: flutter build apk --release --target-platform android-arm64
         working-directory: example
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
